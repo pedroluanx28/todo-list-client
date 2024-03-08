@@ -1,0 +1,17 @@
+.add-task-btn {
+    background-color: rgb(22 163 74) !important;
+    color: #fff !important;
+    font-weight: 600 !important;
+}
+
+.add-task-btn:hover {
+    background-color: rgb(21 128 61) !important;
+}
+
+.task-card {
+    /* border: 1px solid black; */
+    border-radius: 7px;
+    padding: 12px;
+    width: 50%;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
