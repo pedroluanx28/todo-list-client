@@ -15,3 +15,22 @@
 .bg-grey {
     background-color: rgba(128, 128, 128, 0.250) !important;
 }
+
+.animation {
+    animation: delete 400ms ease-in-out;
+}
+
+.transition {
+    transition: transform 400ms ease;
+}
+
+@keyframes delete {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        margin-left: 50%;
+    }
+}

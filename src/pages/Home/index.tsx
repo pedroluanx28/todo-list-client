@@ -13,6 +13,7 @@ export function Home() {
     const [paginate, setPaginate] = useState<any>();
     const [page, setPage] = useState(1);
     const [showNewTaskModal, setShowNewTaskModal] = useState(false);
+    const [currentDelete, setCurrentDelete] = useState(0);
 
     const nextId = tasks[tasks.length - 2]?.id + 1;
 
@@ -62,7 +63,11 @@ export function Home() {
         try {
             await api.delete(`/todos/${taskId}`);
 
-            setTasks(tasks.filter(task => taskId !== task.id));
+            setCurrentDelete(taskId);
+
+            setTimeout(() => {
+                setTasks(tasks.filter(task => taskId !== task.id));
+            }, 400);
         } catch (error) {
             console.error(error);
         }
@@ -102,7 +107,7 @@ export function Home() {
                 >
                     <div className="d-flex flex-column gap-3 align-items-center py-2">
                         {tasks?.map((task, index) => (
-                            <div className={`d-flex align-items-center task-card justify-content-between ${task.checked && 'bg-grey'}`} key={`task-${index}`}>
+                            <div className={`d-flex align-items-center task-card justify-content-between transition ${(currentDelete === task.id) && 'animation'} ${task.checked && 'bg-grey'}`} key={`task-${index}`}>
                                 <div className={`d-flex align-items-center gap-2 ${task.checked && 'text-decoration-through'}`}>
                                     <input type="checkbox" className="form-check-input m-0" checked={task.checked} onChange={() => updateCheckList(task.id, task.checked)} />
                                     <label>{task.title}</label>
