@@ -5,8 +5,11 @@ import { Task } from '../../@types/task';
 import { api } from '../../Api';
 import { FaRegTrashCan } from "react-icons/fa6";
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { PrioritysEnum } from '../../utils/enums/priority';
 
 import './styles.css';
+
+type labelColorType = "1" | "2" | "3" | "3";
 
 export function Home() {
     const [tasks, setTasks] = useState([] as Task[]);
@@ -99,6 +102,17 @@ export function Home() {
         return arr;
     }
 
+    function getLabelColor(color: labelColorType) {
+        const labelColors = {
+            1: "grey-label",
+            2: "green-label",
+            3: "yellow-label",
+            4: "red-label",
+        }
+
+        return labelColors[color];
+    }
+
     useEffect(() => {
         fetchTasks();
     }, [page]);
@@ -131,15 +145,19 @@ export function Home() {
 
                 >
                     <div className="d-flex flex-column gap-3 align-items-center py-2">
-                        {tasks?.map((task, index) => (
-                            <div className={`d-flex align-items-center task-card justify-content-between transition ${(currentDelete === task.id) && 'animation'} ${task.checked && 'bg-grey'}`} key={`task-${index}`}>
-                                <div className={`d-flex align-items-center gap-2 ${task.checked && 'text-decoration-through'}`}>
-                                    <input type="checkbox" className="form-check-input m-0" checked={task.checked} onChange={() => updateCheckList(task.id, task.checked)} />
-                                    <label>{task.title}</label>
+                        {tasks?.map((task, index) => { 
+
+                            return (
+                                <div className={`d-flex align-items-center task-card justify-content-between transition ${(currentDelete === task.id) && 'animation'} ${task.checked && 'bg-grey'}`} key={`task-${index}`}>
+                                    <div className={`d-flex align-items-center gap-2`}>
+                                        <input type="checkbox" className="form-check-input m-0" checked={task.checked} onChange={() => updateCheckList(task.id, task.checked)} />
+                                        <span className={`${task.checked && 'text-decoration-through'}`}>{task.title}</span>
+                                        <span className={getLabelColor((task.priority as labelColorType))}>{PrioritysEnum[Number(task.priority)]}</span>
+                                    </div>
+                                    <button className="btn" onClick={() => handleDeleteCheckList(task.id)}><FaRegTrashCan /></button>
                                 </div>
-                                <button className="btn" onClick={() => handleDeleteCheckList(task.id)}><FaRegTrashCan /></button>
-                            </div>
-                        ))}
+                            )
+                        })}
                     </div>
                 </InfiniteScroll>
             )}
