@@ -14,8 +14,7 @@ export function Home() {
     const [page, setPage] = useState(1);
     const [showNewTaskModal, setShowNewTaskModal] = useState(false);
     const [currentDelete, setCurrentDelete] = useState(0);
-
-    const nextId = tasks[tasks.length - 2]?.id + 1;
+    const [currentUser, setCurrentUser] = useState({} as any);
 
     const handleShowNewTaskModal = () => setShowNewTaskModal(true);
     const handleCloseNewTaskModal = () => setShowNewTaskModal(false);
@@ -40,7 +39,7 @@ export function Home() {
 
     async function updateCheckList(taskId: number, checked: boolean) {
         try {
-            await api.put(`/todos/${taskId ? taskId : nextId}`, {
+            await api.put(`/todos/${taskId}`, {
                 checked: !checked,
             });
 
@@ -73,6 +72,21 @@ export function Home() {
         }
     }
 
+    async function me() {
+        try {
+            const { data } = await api.get("/me");
+
+            setCurrentUser(data.user);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    function logout() {
+        localStorage.removeItem("token");
+        location.reload();
+    }
+
     function removeDuplicates(inArray: Task[]) {
         let arr = inArray.concat()
         for (let i = 0; i < arr.length; ++i) {
@@ -89,9 +103,20 @@ export function Home() {
         fetchTasks();
     }, [page]);
 
+    useEffect(() => {
+        me()
+    }, []);
+
     return (
         <div className="container-fluid py-3">
-            <button className="btn add-task-btn mb-3" onClick={handleShowNewTaskModal}><FaPlus /> Nova tarefa</button>
+            <div className="d-flex justify-content-between">
+                <button className="btn add-task-btn mb-3" onClick={handleShowNewTaskModal}><FaPlus /> Nova tarefa</button>
+
+                <div className="d-flex flex-column align-items-center">
+                    <span>{currentUser.name}</span>
+                    <button className="btn btn-danger" onClick={logout}>Deslogar</button>
+                </div>
+            </div>
 
             {tasks.length < 1 ? (
                 <div className="d-flex justify-content-center">
